@@ -95,16 +95,11 @@ func ParseMeminfo(data []byte) (memTotal, memAvail, memUsed, swapTotal, swapUsed
 		default:
 			continue
 		}
-		valBytes := bytes.TrimSpace(line[colonIdx+1:])
-
-		// Values are formatted as "<number> kB"
-		spaceIdx := bytes.IndexByte(valBytes, ' ')
-		var numStr string
-		if spaceIdx > 0 {
-			numStr = string(valBytes[:spaceIdx])
-		} else {
-			numStr = string(valBytes)
+		fields := bytes.Fields(line[colonIdx+1:])
+		if len(fields) != 2 || string(fields[1]) != "kB" {
+			return 0, 0, 0, 0, 0, fmt.Errorf("invalid meminfo units for %s", key)
 		}
+		numStr := string(fields[0])
 
 		valKB, parseErr := strconv.ParseUint(numStr, 10, 64)
 		if parseErr != nil || valKB > ^uint64(0)/1024 {
@@ -140,9 +135,13 @@ func ParseMeminfo(data []byte) (memTotal, memAvail, memUsed, swapTotal, swapUsed
 		}
 	} else {
 		// Fallback: MemTotal - (MemFree + Buffers + Cached)
-		nonUsed := memFree + buffers + cached
-		if nonUsed > memTotal {
-			nonUsed = memTotal
+		var nonUsed uint64
+		for _, amount := range []uint64{memFree, buffers, cached} {
+			if amount > memTotal-nonUsed {
+				nonUsed = memTotal
+				break
+			}
+			nonUsed += amount
 		}
 		memAvail = nonUsed
 		if memTotal >= nonUsed {
@@ -281,7 +280,7 @@ func ParsePIDStatus(data []byte) (uid uint32, vmRSSBytes uint64, vmSizeBytes uin
 			fields := bytes.Fields(val)
 			if len(fields) > 0 {
 				kb, err := strconv.ParseUint(string(fields[0]), 10, 64)
-				if err == nil {
+				if err == nil && kb <= ^uint64(0)/1024 {
 					vmRSSBytes = kb * 1024
 				}
 			}
@@ -289,7 +288,7 @@ func ParsePIDStatus(data []byte) (uid uint32, vmRSSBytes uint64, vmSizeBytes uin
 			fields := bytes.Fields(val)
 			if len(fields) > 0 {
 				kb, err := strconv.ParseUint(string(fields[0]), 10, 64)
-				if err == nil {
+				if err == nil && kb <= ^uint64(0)/1024 {
 					vmSizeBytes = kb * 1024
 				}
 			}
@@ -340,7 +339,7 @@ func ParseSmapsRollup(data []byte) (pssBytes uint64, found bool) {
 			fields := bytes.Fields(line[4:])
 			if len(fields) > 0 {
 				kb, err := strconv.ParseUint(string(fields[0]), 10, 64)
-				if err == nil {
+				if err == nil && kb <= ^uint64(0)/1024 {
 					return kb * 1024, true
 				}
 			}

@@ -346,3 +346,22 @@ func TestGuestAccountingAndMalformedCounters(t *testing.T) {
 		t.Fatal("accepted invalid identity")
 	}
 }
+
+func TestMeminfoWhitespaceOverflowAndUnits(t *testing.T) {
+	_, avail, used, _, _, err := ParseMeminfo([]byte("MemTotal:\t10\tkB\nMemFree:\t3\tkB\nBuffers: 2 kB\nCached: 1 kB\n"))
+	if err != nil || avail != 6*1024 || used != 4*1024 {
+		t.Fatalf("tab-delimited meminfo: avail=%d used=%d err=%v", avail, used, err)
+	}
+	_, avail, used, _, _, err = ParseMeminfo([]byte("MemTotal: 10 kB\nMemFree: 18014398509481983 kB\nBuffers: 18014398509481983 kB\n"))
+	if err != nil || avail != 10*1024 || used != 0 {
+		t.Fatalf("fallback overflow: avail=%d used=%d err=%v", avail, used, err)
+	}
+	for _, input := range []string{"MemTotal: 10 MB\n", "MemTotal: 18014398509481984 kB\n"} {
+		if _, _, _, _, _, err := ParseMeminfo([]byte(input)); err == nil {
+			t.Errorf("accepted invalid memory: %q", input)
+		}
+	}
+	if _, valid := ParseSmapsRollup([]byte("Pss: 18014398509481984 kB\n")); valid {
+		t.Fatal("accepted PSS overflow")
+	}
+}

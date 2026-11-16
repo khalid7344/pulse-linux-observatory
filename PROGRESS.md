@@ -1,7 +1,7 @@
 # Current progress
 
 The implementation is present and has received a local engineering audit.
-Publication is pending owner approval, license selection, usable GitHub access,
+Publication is authorized and pending usable GitHub access,
 and a repository-name availability check.
 
 - Collector/model: implemented; parsing, fixtures, counter math and ring tests pass.
@@ -15,5 +15,4 @@ Formatting, vet, build and module verification pass. See AUDIT.md for the test
 environment and limitations, and README.md for current measured benchmarks.
 No steady-state self-CPU overhead or additional OS/hardware support is claimed.
 
-Next task: confirm license and GitHub availability, obtain final publication
-approval, then create the repository, push main, and verify CI.
+Next task: restore GitHub access and verify availability, then create the repository, push main, and verify CI.

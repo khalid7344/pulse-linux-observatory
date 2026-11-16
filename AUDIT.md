@@ -28,6 +28,14 @@ was added.
   requirements. Added full CI and corrected prerequisites, formulas, license,
   performance claims, security, commands, environment support, and roadmap.
 
+## Completion follow-up
+
+MIT licensing for original code is now explicitly authorized by the owner. Notices
+for all pinned direct/indirect requirements preserve upstream licensing. Added
+regressions for legal tab-separated meminfo, invalid units, memory overflow, and
+non-object JSON configuration. README troubleshooting and reproducible-build
+commands were checked. No final approval request is required under current authorization.
+
 ## Results
 
 `go test -race -count=1 ./...` passes all six packages. New regression cases cover
@@ -43,8 +51,8 @@ binary; `ldd` reports not a dynamic executable (its expected nonzero exit).
 
 ## Remaining limitations
 
-No license selected yet; the prior README MIT badge was unsupported and removed.
-No LICENSE or Pulse release archive will be published without owner confirmation.
+The owner has now explicitly authorized MIT for original code. LICENSE applies to
+owner-controlled original code; dependency licenses and notices are preserved.
 The desired GitHub name has not been verified available. Source is prepared on main.
 
 Only this Linux amd64 host is tested. No multihour retention/overhead test was

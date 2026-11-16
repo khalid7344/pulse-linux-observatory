@@ -241,7 +241,7 @@ func (e *Engine) ProcessSample(ctx context.Context, curr model.RawSystemSample, 
 		var pHist *model.RingBuffer[float64]
 		var ok bool
 		if pHist, ok = e.procHistories[proc.Key]; !ok {
-			pHist = model.NewRingBuffer[float64](e.cfg.HistorySize) // Keep last 60 ticks for process trend
+			pHist = model.NewRingBuffer[float64](e.cfg.HistorySize) // Retain configured process history
 			e.procHistories[proc.Key] = pHist
 		}
 		pHist.Push(cpuNorm)

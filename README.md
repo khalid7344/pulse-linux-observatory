@@ -378,5 +378,26 @@ log rotation, and the documented Prometheus exporter. Benchmark each change.
 
 ## License
 
-License selection is awaiting owner confirmation. No license grant is asserted
-and no LICENSE file has been added. Dependencies retain their own licenses.
+Original project code is available under the [MIT License](LICENSE), as authorized
+by its owner. Third-party dependencies retain their licenses and attributions;
+see [dependency notices](docs/THIRD_PARTY_NOTICES.md). No third-party code is relicensed.
+
+## Troubleshooting
+
+- **Missing /proc/stat or /proc/meminfo:** run on Linux with a readable proc mount,
+  or use `--proc-root=testdata/proc_fixtures/tick_01` for a synthetic demonstration.
+- **0% CPU in the fixture demo:** the unchanged fixture has no counter deltas; the
+  two-fixture tests verify nonzero utilization. The first live sample is a baseline.
+- **PSS is N/A:** leave PSS disabled or accept missing values when proc permissions
+  restrict access; elevated privileges are not required for normal operation.
+- **No interactive terminal:** use `--once --json` or `--headless --ticks=3`.
+- **Config rejected:** use the nested `engine`/`alert` JSON example above, positive
+  timing/history values and valid threshold ranges. Unknown fields are rejected.
+- **Go build fails from an exported source archive:** add `-buildvcs=false` when
+  the surrounding directory cannot supply valid Git metadata.
+
+For reproducible local static builds, use the same Go toolchain and source:
+
+```sh
+CGO_ENABLED=0 go build -trimpath -buildvcs=false -o bin/pulse ./cmd/pulse
+```

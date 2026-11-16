@@ -531,10 +531,10 @@ CGO_ENABLED=0 go build -o bin/pulse ./cmd/pulse
 
 Implementation exists for M1–M5. The current engineering audit, test evidence and
 remaining limitations are documented in AUDIT.md and PROGRESS.md. GitHub publication,
-license selection, remote CI and minimum-Go runtime verification remain pending.
+remote CI and minimum-Go runtime verification remain pending.
 The implementation requirements above are design targets, not certification that
 every acceptance criterion has been met. In particular, no current steady-state
 CPU overhead or multihour resource-retention measurement is available.
 
 The current dependency minimum is Go 1.24.0. No Prometheus service is implemented.
-Next task: resolve publication prerequisites and obtain the final owner approval.
+Next task: restore GitHub access, verify repository availability, then publish under the owner’s authorization.

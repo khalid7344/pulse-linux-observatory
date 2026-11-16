@@ -93,6 +93,9 @@ func LoadConfig(path string) (Config, error) {
 		Alert  *AlertConfig     `json:"alert"`
 	}
 
+	if trimmed := bytes.TrimSpace(data); len(trimmed) == 0 || trimmed[0] != '{' {
+		return cfg, fmt.Errorf("config must be a JSON object")
+	}
 	raw := rawConfig{Alert: &cfg.Alert}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
@@ -148,7 +151,7 @@ func LoadConfig(path string) (Config, error) {
 // Validate rejects invalid values before timers, allocations, or files are created.
 func (c Config) Validate() error {
 	if c.Engine.ProcRoot == "" || c.Engine.Interval <= 0 || c.Engine.HistorySize <= 0 || c.Engine.HistorySize > 100000 || c.Engine.UserHZ == 0 {
-		return fmt.Errorf("engine requires a proc root, positive interval/user-hz/page-size and history-size in 1..100000")
+		return fmt.Errorf("engine requires a proc root, positive interval/user-hz and history-size in 1..100000")
 	}
 	for _, v := range []float64{c.Alert.CPUWarnPercent, c.Alert.SysMemWarnPercent} {
 		if math.IsNaN(v) || math.IsInf(v, 0) || v <= 0 || v > 100 {

@@ -21,7 +21,7 @@ func TestConfigPartialAndInvalid(t *testing.T) {
 	if err := cfg.Validate(); err != nil {
 		t.Fatal(err)
 	}
-	for _, input := range []string{`{"engine":{"typo":1}}`, `{} {}`, `{"engine":{"interval":"bad"}}`} {
+	for _, input := range []string{`null`, `[]`, `{"engine":{"typo":1}}`, `{} {}`, `{"engine":{"interval":"bad"}}`} {
 		if err := os.WriteFile(path, []byte(input), 0600); err != nil {
 			t.Fatal(err)
 		}
