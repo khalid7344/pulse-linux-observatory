@@ -1,0 +1,9 @@
+Name:	nginx
+State:	S (sleeping)
+Tgid:	101
+Pid:	101
+PPid:	1
+Uid:	1000	1000	1000	1000
+Gid:	1000	1000	1000	1000
+VmSize:	  102400 kB
+VmRSS:	   20480 kB

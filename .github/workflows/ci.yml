@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ['1.24.x', stable]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+      - name: Formatting
+        run: test -z "$(gofmt -l .)"
+      - name: Verify modules
+        run: go mod verify
+      - name: Vet
+        run: go vet ./...
+      - name: Race tests
+        run: go test -race -count=1 ./...
+      - name: Build all packages
+        run: go build ./...
+      - name: Static Linux binary
+        env:
+          CGO_ENABLED: '0'
+        run: go build -trimpath -o bin/pulse ./cmd/pulse
