@@ -132,7 +132,7 @@ func TestParsePIDCmdline(t *testing.T) {
 }
 
 func TestParseSmapsRollup(t *testing.T) {
-	data := []byte(`10000000-10001000 ---p 00000000 00:00 0 
+	data := []byte(`10000000-10001000 ---p 00000000 00:00 0
 Pss:               12288 kB
 Pss_Dirty:             0 kB
 Pss_Anon:              0 kB

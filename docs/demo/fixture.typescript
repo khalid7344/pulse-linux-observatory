@@ -1,0 +1,415 @@
+Script started on 2026-11-15 21:24:30-05:00 [COMMAND="stty cols 140 rows 32; ./bin/pulse --proc-root=testdata/proc_fixtures/tick_01 --interval=250ms" TERM="xterm-256color" TTY="/dev/console" COLUMNS="80" LINES="24"]
+]11;?\[6n[?25l[?1049h[2J[H[?25l[?2004h[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Initializing /proc collector...[K
+[K
+Waiting for initial telemetry sample...[K
+[K[4;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #1 | Interval: 250ms | Cores: 4 | USER_HZ: 100 | Scan: 226.25µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [ ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄][K
+Processes: 3 (Running: 1)  |  Zombies: 0  |  Diagnostics: Vanished: 0 | Perm: 0 | Errors: 0[K
+[K
+PID     USER   S   CPU% ▼   MEM%     RSS        VMS        PSS        TH   COMMAND[K
+──────────────────────────────────────────────────────────────────────────────────[K
+101     1000   S       0.0%     0.1% 20.0 MB    100.0 MB   N/A        1    nginx: master process -g daemon off;[K
+202     1000   R       0.0%     6.4% 1.0 GB     2.0 GB     N/A        4    /usr/lib/firefox/firefox -contentproc[K
+303     1000   S       0.0%     0.0% 4.0 MB     10.0 MB    N/A        2    worker-pool[K
+[K
+Scroll: ↑/↓/j/k | Sort: [c]CPU [m]MEM [p]PID [v]VMS | Mode: [i]Irix/Norm | Filter: [/] | Alerts: [a] | Quit: [q][K[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #2 | Interval: 251.413966ms | Cores: 4 | USER_HZ: 100 | Scan: 193.98µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [  ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #3 | Interval: 250.334972ms | Cores: 4 | USER_HZ: 100 | Scan: 170.717µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [   ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #4 | Interval: 250.435389ms | Cores: 4 | USER_HZ: 100 | Scan: 193.7µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [    ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #5 | Interval: 251.181664ms | Cores: 4 | USER_HZ: 100 | Scan: 178.752µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [     ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #6 | Interval: 251.280958ms | Cores: 4 | USER_HZ: 100 | Scan: 155.608µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [      ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #7 | Interval: 250.831623ms | Cores: 4 | USER_HZ: 100 | Scan: 218.756µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [       ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #8 | Interval: 250.601266ms | Cores: 4 | USER_HZ: 100 | Scan: 189.221µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [        ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #9 | Interval: 250.518944ms | Cores: 4 | USER_HZ: 100 | Scan: 224.316µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [         ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #10 | Interval: 251.059236ms | Cores: 4 | USER_HZ: 100 | Scan: 235.607µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [          ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #11 | Interval: 250.712031ms | Cores: 4 | USER_HZ: 100 | Scan: 165.247µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [           ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #12 | Interval: 250.364698ms | Cores: 4 | USER_HZ: 100 | Scan: 176.497µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [            ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #13 | Interval: 251.163038ms | Cores: 4 | USER_HZ: 100 | Scan: 150.389µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [             ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #14 | Interval: 250.933202ms | Cores: 4 | USER_HZ: 100 | Scan: 193.94µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [              ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #15 | Interval: 251.03934ms | Cores: 4 | USER_HZ: 100 | Scan: 159.626µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [               ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #16 | Interval: 251.021567ms | Cores: 4 | USER_HZ: 100 | Scan: 170.005µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #17 | Interval: 250.968277ms | Cores: 4 | USER_HZ: 100 | Scan: 134.78µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                 ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #18 | Interval: 250.401977ms | Cores: 4 | USER_HZ: 100 | Scan: 206.493µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                  ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #19 | Interval: 250.822716ms | Cores: 4 | USER_HZ: 100 | Scan: 139.879µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                   ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #20 | Interval: 250.301039ms | Cores: 4 | USER_HZ: 100 | Scan: 168.022µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                    ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #21 | Interval: 251.258457ms | Cores: 4 | USER_HZ: 100 | Scan: 139.219µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                     ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #22 | Interval: 250.494438ms | Cores: 4 | USER_HZ: 100 | Scan: 233.092µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                      ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #23 | Interval: 250.563196ms | Cores: 4 | USER_HZ: 100 | Scan: 167.25µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                       ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #24 | Interval: 251.358892ms | Cores: 4 | USER_HZ: 100 | Scan: 204.96µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                        ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #25 | Interval: 250.568185ms | Cores: 4 | USER_HZ: 100 | Scan: 198.128µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                         ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #26 | Interval: 251.185912ms | Cores: 4 | USER_HZ: 100 | Scan: 159.687µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                          ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #27 | Interval: 250.744893ms | Cores: 4 | USER_HZ: 100 | Scan: 158.314µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                           ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #28 | Interval: 251.241484ms | Cores: 4 | USER_HZ: 100 | Scan: 207.776µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                            ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #29 | Interval: 251.358664ms | Cores: 4 | USER_HZ: 100 | Scan: 173.883µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                             ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #30 | Interval: 250.351031ms | Cores: 4 | USER_HZ: 100 | Scan: 198.739µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                              ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #31 | Interval: 251.230434ms | Cores: 4 | USER_HZ: 100 | Scan: 198.328µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                               ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #32 | Interval: 250.299296ms | Cores: 4 | USER_HZ: 100 | Scan: 173.742µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                                ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #33 | Interval: 250.749371ms | Cores: 4 | USER_HZ: 100 | Scan: 211.162µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                                 ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[H⚡ PULSE LINUX OBSERVATORY  [NORMALIZED 0-100%]  Tick #34 | Interval: 251.199306ms | Cores: 4 | USER_HZ: 100 | Scan: 233.684µs[K
+
+CPU: [░░░░░░░░░░░░░░░░░░]   0.0%  Trend: [                                  ][K
+MEM: [█████████░░░░░░░░░]  50.0%  7.8 GB / 15.6 GB  Swap: 0 B / 3.9 GB  Trend: [▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄][K
+
+
+
+
+
+
+
+
+[13;H[HExiting Pulse Linux Observatory...[K
+[J[2;H[2K[?2004l[?25h[?1002l[?1003l[?1006l[?1049l[?25h
+Script done on 2026-11-15 21:24:39-05:00 [COMMAND_EXIT_CODE="0"]
