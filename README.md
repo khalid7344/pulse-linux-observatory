@@ -1,9 +1,10 @@
 # Pulse Linux Observatory (`pulse`)
 
 [![Go Version](https://img.shields.io/badge/Go-1.24%2B-00ADD8?logo=go)](https://golang.org)
-[![Build Status](https://img.shields.io/badge/CGO_ENABLED-0-brightgreen.svg)](#zero-c-dependencies)
+[![CI](https://github.com/khalid7344/pulse-linux-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/khalid7344/pulse-linux-observatory/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Pulse Linux Observatory** is a Linux telemetry engine and interactive Terminal UI (TUI) engineered for systems programmers, Linux platform engineers, and performance-conscious operators. Built on modern Go with `CGO_ENABLED=0`, Pulse directly parses Linux `/proc` pseudo-files through Go's `io/fs.FS` abstraction, preventing PID-reuse misattribution, distinguishing virtual vs. physical vs. proportional memory pressure, enforcing hysteresis-backed threshold alerting, and retaining bounded historical circular buffers.
+**Pulse Linux Observatory** is a Linux telemetry engine and interactive Terminal UI (TUI) engineered for systems programmers, Linux platform engineers, and performance-conscious operators. Built on modern Go with `CGO_ENABLED=0`, Pulse directly parses Linux `/proc` pseudo-files through Go's `io/fs.FS` abstraction, protecting cross-sample CPU accounting against PID reuse, distinguishing virtual vs. physical vs. proportional memory pressure, enforcing hysteresis-backed threshold alerting, and retaining bounded historical circular buffers.
 
 ---
 
@@ -12,88 +13,75 @@
 Pulse adopts a clean hexagonal domain architecture separated into distinct layers coordinated via `context.Context`:
 
 ```text
-+-----------------------------------------------------------------------+
-|                           cmd/pulse/main.go                           |
-|          CLI Flags, JSON Config Loader, Signal Handling (SIGINT)      |
-+-----------------------------------+-----------------------------------+
-                                    |
-                                    v
-+-----------------------------------------------------------------------+
-|                        internal/procfs (Collector)                    |
-|   Injected io/fs.FS -> Low-Alloc Byte Parsers (/proc/stat, meminfo,   |
-|   [pid]/stat, [pid]/status, [pid]/cmdline, optional smaps_rollup)     |
-+-----------------------------------+-----------------------------------+
-                                    | RawTickSnapshot
-                                    v
-+-----------------------------------------------------------------------+
-|                    internal/engine (State & History)                  |
-|  - Matches processes via ProcessKey{PID, StartTime} (PID reuse safe)  |
-|  - Computes CPU% deltas (Normalized 0-100% or Irix mode, USER_HZ)     |
-|  - Updates bounded RingBuffer[SystemSample] & Process History         |
-|  - Publishes immutable SystemView to registered MetricsSink list      |
-+-----------------+-----------------------------------+-----------------+
-                  |                                   |
-                  v                                   v
-+-----------------------------------+   +-------------------------------+
-|    internal/alert (MetricsSink)   |   |  Future PromExporter (Design)   |
-|  - Hysteresis rule evaluation     |   |  - Documented Phase 2 sink    |
-|  - Emits AlertEvent to TUI &      |   |    implementing MetricsSink   |
-|    optional slog JSONL file       |   +-------------------------------+
-+-----------------+-----------------+
-                  | AlertEvent / SystemView
-                  v
-+-----------------------------------------------------------------------+
-|                       internal/tui (Presentation)                     |
-|   Bubble Tea Model/Update/View: Header Gauges, Sparklines, Sortable   |
-|   & Filterable Process Table (RSS/VMS/PSS), Live Alert Banner Drawer  |
-+-----------------------------------------------------------------------+
+cmd/pulse: flags, config, signals and execution modes
+    |
+    v
+procfs: read /proc through an injected fs.FS
+    |
+    v
+engine: two-sample CPU deltas, PID identity and bounded history
+    |
+    +--> alert: sustained thresholds and optional JSONL logging
+    |
+    +--> tui / headless reports: snapshots and alert state
 ```
+
+`MetricsSink` is the extension boundary for downstream consumers. The current
+alert evaluator implements it; Prometheus integration is a future design, not a
+running exporter.
 
 ### Core Packages
 
 * **`internal/model`**: Domain data structures (`ProcessKey`, `RawProcessSample`, `ProcessMetrics`, `SystemView`, `AlertEvent`), generic circular `RingBuffer[T]`, and the extensible `MetricsSink` interface.
 * **`internal/procfs`**: Resilient `/proc` parsers operating over `io/fs.FS`. Uses reverse-parenthesis scanning for arbitrary process `comm` strings, ASCII control-character sanitization, buffered reads on 0-byte pseudo-files, and graceful fault-tolerance against `fs.ErrNotExist` and `fs.ErrPermission`.
-* **`internal/engine`**: Stateful two-sample telemetry calculator. Maintains composite `ProcessKey` identity, computes Normalized vs. Irix CPU% deltas, prunes dead PID ring buffers to maintain an $O(P)$ memory ceiling, and fans out immutable `SystemView` snapshots.
+* **`internal/engine`**: Stateful two-sample telemetry calculator. Maintains composite `ProcessKey` identity, computes Normalized vs. Irix CPU% deltas, prunes dead PID ring buffers to maintain an `O(P)` memory bound, where `P` is the visible process count, and fans out immutable `SystemView` snapshots.
 * **`internal/alert`**: Hysteresis-backed alerting engine implementing `model.MetricsSink`. Tracks consecutive breach counters across ticks (`SustainedTicks`) to eliminate transient spike flapping, and streams structured JSONL events to disk via `log/slog`.
 * **`internal/tui`**: Responsive Elm-architecture terminal UI powered by Bubble Tea and Lip Gloss. Features ASCII gauges, Unicode sparklines, live substring filtering (`/`), sorting (`c`, `m`, `p`, `v`), and expandable alert notifications.
 * **`cmd/pulse`**: Single entrypoint handling CLI flags, JSON configuration loading, headless batch execution (`--headless`, `--once`), and OS signal termination.
 
 ---
 
-## 2. Mathematical Formulation: Two-Sample CPU Deltas
+## 2. Two-sample CPU deltas
 
-Linux does not expose an instantaneous "CPU utilization" counter. Instead, `/proc/stat` and `/proc/[pid]/stat` expose monotonic cumulative counters in units of clock ticks (jiffies). Pulse computes true differential rate-of-change telemetry across consecutive ticks $T_1$ and $T_2$ ($\Delta t = T_2 - T_1$):
+Linux exposes cumulative CPU counters in clock ticks, not instantaneous CPU usage.
+Pulse compares a baseline sample with the next sample. `delta(x)` means the current
+counter minus its previous value, clamped to zero if the counter regresses.
 
-### System CPU Utilization
-Given aggregate CPU jiffies from `/proc/stat` line `cpu `:
-$$\text{TotalJiffies} = \text{user} + \text{nice} + \text{system} + \text{idle} + \text{iowait} + \text{irq} + \text{softirq} + \text{steal}$$
-$$\text{ActiveJiffies} = \text{TotalJiffies} - (\text{idle} + \text{iowait})$$
-$$\Delta\text{Total} = \text{TotalJiffies}_{T_2} - \text{TotalJiffies}_{T_1}$$
-$$\Delta\text{Active} = \text{ActiveJiffies}_{T_2} - \text{ActiveJiffies}_{T_1}$$
-$$\text{System CPU \%} = \begin{cases}
-\frac{100.0 \times \Delta\text{Active}}{\Delta\text{Total}}, & \text{if } \Delta\text{Total} > 0 \\
-0.0\%, & \text{otherwise}
-\end{cases}$$
+### System CPU utilization
 
-### Per-Process CPU Utilization: Normalized vs. Irix Modes
-Given process jiffies from field 14 (`utime`) and field 15 (`stime`) in `/proc/[pid]/stat`:
-$$\text{ProcJiffies} = \text{utime} + \text{stime}$$
-$$\Delta\text{Proc} = \text{ProcJiffies}_{T_2} - \text{ProcJiffies}_{T_1}$$
+The first eight aggregate fields in `/proc/stat` give:
 
-Pulse supports two distinct accounting paradigms:
+```text
+total  = user + nice + system + idle + iowait + irq + softirq + steal
+active = total - idle - iowait
+system_cpu_percent = 100 * delta(active) / delta(total)
+```
 
-1. **Normalized Mode (Default, `--irix=false`):**
-   Represents process CPU consumption as a fraction of **total system capacity** across all cores (bounded strictly to $[0.0\%, 100.0\%]$):
-   $$\text{CPU\%}_{\text{norm}} = \min\left(100.0, \max\left(0.0, \frac{100.0 \times \Delta\text{Proc}}{\Delta\text{Total}}\right)\right)$$
+When `delta(total)` is zero, system CPU usage is zero. Results are clamped to
+`0..100%`. `guest` and `guest_nice` are already included in `user` and `nice`;
+adding them again would double-count guest time.
 
-2. **Irix Mode (`--irix=true` or runtime `i` toggle):**
-   Standardized UNIX mode (classic `top`/`htop` convention) where `100.0%` represents full saturation of **one logical CPU core**. Bounded to $[0.0\%, 100.0\% \times N_{\text{cores}}]$:
-   $$\text{CPU\%}_{\text{irix}} = \min\left(100.0 \times N_{\text{cores}}, \max\left(0.0, \frac{100.0 \times \Delta\text{Proc}}{\Delta t \times \text{USER\_HZ}}\right)\right)$$
+### Per-process utilization
 
-Guest and guest_nice are already included in user and nice and must not be added again.
+A process's counter is `utime + stime` from `/proc/[pid]/stat`. Its two samples must
+have the same `PID` and `starttime`; a new or recycled process starts at zero.
 
-### The `USER_HZ` (`100 Hz`) Design Decision
-On Linux systems, kernel clock ticks exposed in `/proc` are scaled to the user-space frequency `_SC_CLK_TCK` (`USER_HZ`), which is fixed at `100 Hz` (1 jiffy = 10ms) on x86_64 and ARM64 architectures. Querying `sysconf(_SC_CLK_TCK)` in Go normally requires CGO (`import "C"`). To preserve a pure static `CGO_ENABLED=0` binary, Pulse defaults `USER_HZ` to `100`, while exposing `--user-hz` and `EngineConfig.UserHZ` for deterministic testing and specialized kernels.
+```text
+process_ticks = utime + stime
+normalized_percent = 100 * delta(process_ticks) / delta(total)
+irix_percent = 100 * delta(process_ticks) / (elapsed_seconds * USER_HZ)
+```
+
+Normalized mode measures a share of the whole machine and is clamped to `0..100%`.
+A zero total delta yields zero normalized usage. In Irix mode, `100%` means one
+logical core; usage is clamped to `0..(100 * num_cores)%`. The CLI `--irix` flag and
+TUI `i` key select the displayed mode. Process CPU alerts use normalized usage.
+
+### Clock frequency
+
+`USER_HZ` defaults to 100 ticks per second. Check your host with `getconf CLK_TCK`
+and use `--user-hz` if needed. Keeping it configurable avoids a CGO dependency.
+The denominator uses elapsed sampling time in seconds, not a duration in nanoseconds.
 
 ---
 
@@ -110,7 +98,7 @@ type ProcessKey struct {
 }
 ```
 
-* **Behavior on Recycling:** When PID `303` dies and a new process reuses PID `303`, the kernel assigns a new `StartTime` (e.g., `7000` $\to$ `7095`).
+* **Behavior on Recycling:** When PID `303` dies and a new process reuses PID `303`, the kernel assigns a new `StartTime` (e.g., `7000` to `7095`).
 * **Engine Response:** The engine detects that `ProcessKey{303, 7095}` does not match `ProcessKey{303, 7000}`. Rather than computing an invalid delta, it treats the recycled PID as a brand-new process:
   * Initializes delta CPU% to `0.0%` on its first tick.
   * Resets per-process historical ring buffers.
@@ -126,16 +114,19 @@ Memory consumption on modern virtual-memory Linux systems is frequently misunder
 | :--- | :--- | :--- | :--- |
 | **VMS** (Virtual Memory Size) | `/proc/[pid]/stat` (field 23 `vsize`) | Total virtual address space allocated, including mapped files, shared libraries, heap, and thread stacks. | Misleadingly large. A process mapping a 10 GB file uses 10 GB VMS even if only 4 KB resides in RAM. |
 | **RSS** (Resident Set Size) | `/proc/[pid]/stat` (field 24 `rss * page_size`) | Physical memory pages currently resident in RAM. | **Overcounts shared memory**. Shared libraries (`libc.so`) and shared memory segments (`shm`) are counted in *every* process mapping them. |
-| **PSS** (Proportional Set Size) | `/proc/[pid]/smaps_rollup` (`Pss:`) | Physical memory uniquely held plus shared pages divided proportionally by the number of mapping processes. | **Most accurate representation of real memory footprint**. Requires kernel page-table traversal, introducing higher scan overhead. |
+| **PSS** (Proportional Set Size) | `/proc/[pid]/smaps_rollup` (`Pss:`) | Physical memory uniquely held plus shared pages divided proportionally by the number of mapping processes. | Attributes shared resident pages proportionally; it is not a measure of exclusive allocation. Requires kernel page-table traversal, introducing higher scan overhead. |
 
 ### Optional PSS Scan Overhead Guardrail
-Because reading `/proc/[pid]/smaps_rollup` requires the Linux kernel to traverse memory page tables, Pulse leaves PSS collection disabled by default (`--enable-pss=false`) to preserve sub-millisecond collection latency. When `--enable-pss=true` is enabled, Pulse safely parses `Pss:` and reports `N/A` without failure for processes where `smaps_rollup` is restricted by permissions (`hidepid`).
+Because reading `/proc/[pid]/smaps_rollup` requires the Linux kernel to traverse memory page tables, Pulse leaves PSS collection disabled by default (`--enable-pss=false`) to avoid its additional page-table scanning cost. When `--enable-pss=true` is enabled, Pulse safely parses `Pss:` and reports `N/A` without failure for processes where `smaps_rollup` is restricted by permissions (`hidepid`).
 
 ---
 
 ## 5. Measured Performance Benchmarks
 
-Audit run: Pop!_OS 24.04, Linux amd64, AMD Ryzen 7 7700, Go 1.27.3.
+Recorded benchmark environment: Pop!_OS 24.04, Linux amd64, AMD Ryzen 7 7700, Go 1.27.3.
+This is the measurement toolchain, not the minimum installation requirement. The
+measurements below are retained from that run; they have not been remeasured for
+this documentation update.
 
 ```sh
 go test -run '^$' -bench=. -benchtime=100ms -benchmem ./internal/procfs ./internal/engine
@@ -157,14 +148,15 @@ have costs; collection allocates temporary buffers per process.
 ### Requirements
 
 * Linux with mounted `/proc`; ordinary user access is sufficient.
-* Go 1.24.0 or later (required by the current Bubble Tea dependency), plus Git.
+* Go 1.24.0 or later, plus Git. Both `go.mod` and the pinned Bubble Tea dependency require 1.24.0.
+  CI checks `1.24.x` and `stable`; the benchmark toolchain was 1.27.3. These serve
+  different purposes and do not require every user to install Go 1.27.3.
 * A C compiler for race tests; static builds use `CGO_ENABLED=0`.
 * An interactive terminal for the TUI.
 
 ### Build Static Binary
 
 ```zsh
-# After publication (repository creation is still pending):
 # Clone repository
 git clone https://github.com/khalid7344/pulse-linux-observatory.git
 cd pulse-linux-observatory
@@ -300,7 +292,7 @@ In the current implementation, `internal/alert.Evaluator` implements `MetricsSin
 
 ### Cardinality Safety Guardrail
 > [!IMPORTANT]
-> Linux Process IDs (`PID`) and ephemeral `StartTime` values must **never** be exported as unrestricted Prometheus metric labels. High process churn would rapidly create millions of short-lived time-series, leading to TSDB memory exhaustion. Phase 2 exports per-process metrics strictly aggregated by executable name (`comm`) or bounded to top-$K$ ranks (`rank="1..10"`).
+> Linux Process IDs (`PID`) and ephemeral `StartTime` values must **never** be exported as unrestricted Prometheus metric labels. High process churn would rapidly create millions of short-lived time-series, leading to TSDB memory exhaustion. Phase 2 exports per-process metrics strictly aggregated by executable name (`comm`) or bounded to top-K ranks (`rank="1..10"`).
 
 ---
 
@@ -329,7 +321,8 @@ CGO_ENABLED=0 go test -bench=. -benchmem ./...
 Tested during this audit on Pop!_OS 24.04, Linux amd64, with Go 1.27.3, using
 synthetic fixtures and a live `/proc` smoke run. Other distributions, architectures,
 containers, and restricted proc mounts are unverified. The module minimum is
-Go 1.24.0; CI is configured to check it after publication.
+Go 1.24.0; [CI](https://github.com/khalid7344/pulse-linux-observatory/actions/workflows/ci.yml)
+checks Go 1.24.x and stable Go. See the workflow for current results.
 
 - Collection is a sequential, best-effort walk, not an atomic kernel snapshot.
   PID+starttime protects deltas across ticks; PID reuse during a single multi-file
@@ -372,7 +365,7 @@ synthetic fixture. See [capture instructions](docs/demo/README.md). Reproduce:
 
 ## Roadmap
 
-Validate minimum-version CI and additional Linux environments; add explicit unknown
+Validate additional Linux environments; add explicit unknown
 UID reporting, stronger within-scan PID identity checks, bounded asynchronous sinks,
 log rotation, and the documented Prometheus exporter. Benchmark each change.
 
