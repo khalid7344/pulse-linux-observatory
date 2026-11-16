@@ -6,6 +6,10 @@
 
 **Pulse Linux Observatory** is a Linux telemetry engine and interactive Terminal UI (TUI) engineered for systems programmers, Linux platform engineers, and performance-conscious operators. Built on modern Go with `CGO_ENABLED=0`, Pulse directly parses Linux `/proc` pseudo-files through Go's `io/fs.FS` abstraction, protecting cross-sample CPU accounting against PID reuse, distinguishing virtual vs. physical vs. proportional memory pressure, enforcing hysteresis-backed threshold alerting, and retaining bounded historical circular buffers.
 
+![Pulse TUI displaying the checked-in synthetic proc fixture](docs/screenshot.png)
+
+*Actual TUI capture using synthetic fixture data. Fixed counters yield zero CPU deltas.*
+
 ---
 
 ## 1. Architecture & Package Design
