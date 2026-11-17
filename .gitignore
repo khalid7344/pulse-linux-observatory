@@ -29,5 +29,4 @@ bin/
 *.exe
 
 *.jsonl
-GEMINI_HANDOFF_PROMPT.md
 pulse-config*.json
