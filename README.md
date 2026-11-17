@@ -83,7 +83,7 @@ curl -fLO https://github.com/khalid7344/pulse-linux-observatory/releases/downloa
 curl -fLO https://github.com/khalid7344/pulse-linux-observatory/releases/download/v1.0.0/SHA256SUMS
 sha256sum -c SHA256SUMS
 tar -xzf pulse_v1.0.0_linux_amd64.tar.gz
-./pulse --version
+./pulse --once
 ```
 
 ### Build from source
